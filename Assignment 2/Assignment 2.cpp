@@ -83,18 +83,20 @@ int main() {
 			queue.push(customers[i]);
 		}
 
-		//print the info of the customers and mechanics
-		cout << "Customers: " << endl;
+		//If theres noone free send a message to cancel the appointment else print the info of the customer and his assigned mechanic use the queue class
 		for (int i = 0; i < numCustomers; i++) {
-			customers[i].printInfo();
-			cout << endl;
+			if (queue.Front().getMechanicID() == 0) {
+				cout << "No mechanic available for customer " << queue.Front().getName() << " at " << queue.Front().getAppointment().hours << ":" << queue.Front().getAppointment().mins << endl;
+				cout << endl;
+				queue.pop();
+			}
+			else {
+				//ex:Mr. Ahmed has an appointment at 1:00. with Ayman
+				cout << queue.Front().getName() << " has an appointment at " << queue.Front().getAppointment().hours << ":" << queue.Front().getAppointment().mins << " with " << mechanics[queue.Front().getMechanicID() - 1].getName() << endl;
+				cout << endl;
+				queue.pop();
+			}
 		}
-		cout << "Mechanics: " << endl;
-		for (int i = 0; i < numMechanics; i++) {
-			mechanics[i].printInfo();
-			cout << endl;
-		}
-
 		//Open file customers.txt
 		ofstream customersFile;
 		customersFile.open("customers.txt");
@@ -183,7 +185,6 @@ int main() {
 			}
 		}
 
-		//the customer with an earlier appointment is stored at the beginning of the queue and the customer with the latest appointment is stored at the end.
 		//using a bubble sort to sort the customers by appointment time
 		for (int i = 0; i < numCustomers - 1; i++) {
 			for (int j = 0; j < numCustomers - i - 1; j++) {
@@ -194,21 +195,25 @@ int main() {
 				}
 			}
 		}
+
 		Queue<Customer> queue;
 		for (int i = 0; i < numCustomers; i++) {
 			queue.push(customers[i]);
 		}
 
-		//print the info of the customers and mechanics
-		cout << "Customers: " << endl;
+		//If theres noone free send a message to cancel the appointment else print the info of the customer and his assigned mechanic use the queue class
 		for (int i = 0; i < numCustomers; i++) {
-			customers[i].printInfo();
-			cout << endl;
-		}
-		cout << "Mechanics: " << endl;
-		for (int i = 0; i < numMechanics; i++) {
-			mechanics[i].printInfo();
-			cout << endl;
+			if (queue.Front().getMechanicID() == 0) {
+				cout << "No mechanic available for customer " << queue.Front().getName() << " at " << queue.Front().getAppointment().hours << ":" << queue.Front().getAppointment().mins << endl;
+				cout << endl;
+				queue.pop();
+			}
+			else {
+				//ex:Mr. Ahmed has an appointment at 1:00. with Ayman
+				cout << queue.Front().getName() << " has an appointment at " << queue.Front().getAppointment().hours << ":" << queue.Front().getAppointment().mins << " with " << mechanics[queue.Front().getMechanicID() - 1].getName() << endl;
+				cout << endl;
+				queue.pop();
+			}
 		}
 
 		//Open file customers.txt
@@ -258,6 +263,12 @@ int main() {
 		break;
 	}
 	case 3: {
+		int numCustomers = 20, numMechanics = 20;
+		//create an array of customers
+		Customer* customers = new Customer[numCustomers];
+		//create an array of mechanics
+		Mechanic* mechanics = new Mechanic[numMechanics];
+
 		//open customers.txt
 		ifstream customersFile;
 		customersFile.open("customers.txt");
@@ -271,12 +282,11 @@ int main() {
 			cout << "The customers file is empty, please run the program once or manually enter some information" << endl;
 			return 0;
 		}
+
 		string line2;
 		while (getline(customersFile, line2)) {
 			//number of customers
-			int numCustomers = stoi(line2);
-			//create an array of customers
-			Customer* customers = new Customer[numCustomers];
+			numCustomers = stoi(line2);
 			//read the info of the customers
 			for (int i = 0; i < numCustomers; i++) {
 				//Validate each line
@@ -297,14 +307,6 @@ int main() {
 				getline(customersFile, line2);
 				customers[i].setMechanicID(stoi(line2));
 			}
-			//print the info of the customers
-			cout << "Customers: " << endl;
-			for (int i = 0; i < numCustomers; i++) {
-				customers[i].printInfo();
-				cout << endl;
-			}
-			//delete anything taking up memory
-			delete[] customers;
 		}
 		//close the file
 		customersFile.close();
@@ -325,9 +327,7 @@ int main() {
 		string line1;
 		while (getline(mechanicsFile, line1)) {
 			//number of mechanics
-			int numMechanics = stoi(line1);
-			//create an array of mechanics
-			Mechanic* mechanics = new Mechanic[numMechanics];
+			numMechanics = stoi(line1);
 			//read the info of the mechanics
 			for (int i = 0; i < numMechanics; i++) {
 				//name
@@ -343,6 +343,7 @@ int main() {
 				getline(mechanicsFile, line1);
 				int numAppointments = stoi(line1);
 				// appointments
+
 				for (int j = 0; j < numAppointments; j++) {
 					//hours
 					getline(mechanicsFile, line1);
@@ -354,19 +355,46 @@ int main() {
 					mechanics[i].setAppointment({ hours, mins });
 				}
 			}
-			//print the info of the mechanics
-			cout << "Mechanics: " << endl;
-			for (int i = 0; i < numMechanics; i++) {
-				mechanics[i].printInfo();
-				cout << endl;
-			}
-			//delete anything taking up memory
-			delete[] mechanics;
 		}
 		//close the file
 		mechanicsFile.close();
-		//Check if all the mechanics dont have appointments if so then delete the files
 
+		//using a bubble sort to sort the customers by appointment time
+		for (int i = 0; i < numCustomers - 1; i++) {
+			for (int j = 0; j < numCustomers - i - 1; j++) {
+				if (customers[j] > customers[j + 1]) {
+					Customer temp = customers[j];
+					customers[j] = customers[j + 1];
+					customers[j + 1] = temp;
+				}
+			}
+		}
+
+		Queue<Customer> queue;
+		for (int i = 0; i < numCustomers; i++) {
+			queue.push(customers[i]);
+		}
+
+		//If theres noone free send a message to cancel the appointment else print the info of the customer and his assigned mechanic use the queue class
+		for (int i = 0; i < numCustomers; i++) {
+			if (queue.Front().getMechanicID() == 0) {
+				cout << "No mechanic available for customer " << queue.Front().getName() << " at " << queue.Front().getAppointment().hours << ":" << queue.Front().getAppointment().mins << endl;
+				cout << endl;
+				queue.pop();
+			}
+			else {
+				//ex:Mr. Ahmed has an appointment at 1:00. with Ayman
+				cout << queue.Front().getName() << " has an appointment at " << queue.Front().getAppointment().hours << ":" << queue.Front().getAppointment().mins << " with " << mechanics[queue.Front().getMechanicID() - 1].getName() << endl;
+				cout << endl;
+				queue.pop();
+			}
+		}
+
+		//Deconstruct the queue
+		queue.~Queue();
+		//Clear anything taking up memory
+		delete[] customers;
+		delete[] mechanics;
 		break;
 	}
 	}

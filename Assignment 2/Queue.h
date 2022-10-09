@@ -52,6 +52,10 @@ public:
 		size--;
 		return data;
 	}
+	//front function
+	T Front() {
+		return front->data;
+	}
 	//isEmpty function returns true if the queue is empty
 	bool isEmpty() {
 		if (size == 0) {
