@@ -23,5 +23,5 @@ public:
 	bool operator == (const Customer& c);
 
 	//printInfo function
-	void printInfo() const;
+	virtual void printInfo() const;
 };

@@ -23,5 +23,5 @@ public:
 	bool isAvailable(Appointment) const;
 
 	//printInfo
-	void printInfo() const;
+	virtual void printInfo() const;
 };

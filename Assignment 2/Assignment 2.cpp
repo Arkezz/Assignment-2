@@ -94,6 +94,52 @@ int main() {
 			mechanics[i].printInfo();
 			cout << endl;
 		}
+
+		//Open file customers.txt
+		ofstream customersFile;
+		customersFile.open("customers.txt");
+		//Check that the file is open
+		if (!customersFile.is_open()) {
+			cout << "Error opening file" << endl;
+			return 0;
+		}
+		//Write the info of the customers to the file simmilar to the printInfo function
+		customersFile << numCustomers << endl;
+		for (int i = 0; i < numCustomers; i++) {
+			customersFile << customers[i].getName() << endl;
+			customersFile << customers[i].getID() << endl;
+			customersFile << customers[i].getAppointment().hours << endl;
+			customersFile << customers[i].getAppointment().mins << endl;
+			customersFile << customers[i].getMechanicID() << endl;
+		}
+		//Close the file
+		customersFile.close();
+		//Do the same for mechanics.txt
+		ofstream mechanicsFile;
+		mechanicsFile.open("mechanics.txt");
+		if (!mechanicsFile.is_open()) {
+			cout << "Error opening file" << endl;
+			return 0;
+		}
+		mechanicsFile << numMechanics << endl;
+		for (int i = 0; i < numMechanics; i++) {
+			mechanicsFile << mechanics[i].getName() << endl;
+			mechanicsFile << mechanics[i].getID() << endl;
+			mechanicsFile << mechanics[i].getAge() << endl;
+			//Number of appointments
+			mechanicsFile << mechanics[i].getCounter() << endl;
+			//Appointments
+			for (int j = 0; j < mechanics[i].getCounter(); j++) {
+				mechanicsFile << mechanics[i].getAppointment(j).hours << endl;
+				mechanicsFile << mechanics[i].getAppointment(j).mins << endl;
+			}
+		}
+		//Close the file
+		mechanicsFile.close();
+		//Delete anything taking up memory
+		delete[] customers;
+		delete[] mechanics;
+		break;
 		break;
 	}
 	case 2: {
@@ -164,16 +210,162 @@ int main() {
 			mechanics[i].printInfo();
 			cout << endl;
 		}
+
+		//Open file customers.txt
+		ofstream customersFile;
+		customersFile.open("customers.txt");
+		//Check that the file is open
+		if (!customersFile.is_open()) {
+			cout << "Error opening file" << endl;
+			return 0;
+		}
+		//Write the info of the customers to the file simmilar to the printInfo function
+		customersFile << numCustomers << endl;
+		for (int i = 0; i < numCustomers; i++) {
+			customersFile << customers[i].getName() << endl;
+			customersFile << customers[i].getID() << endl;
+			customersFile << customers[i].getAppointment().hours << endl;
+			customersFile << customers[i].getAppointment().mins << endl;
+			customersFile << customers[i].getMechanicID() << endl;
+		}
+		//Close the file
+		customersFile.close();
+		//Do the same for mechanics.txt
+		ofstream mechanicsFile;
+		mechanicsFile.open("mechanics.txt");
+		if (!mechanicsFile.is_open()) {
+			cout << "Error opening file" << endl;
+			return 0;
+		}
+		mechanicsFile << numMechanics << endl;
+		for (int i = 0; i < numMechanics; i++) {
+			mechanicsFile << mechanics[i].getName() << endl;
+			mechanicsFile << mechanics[i].getID() << endl;
+			mechanicsFile << mechanics[i].getAge() << endl;
+			//Number of appointments
+			mechanicsFile << mechanics[i].getCounter() << endl;
+			//Appointments
+			for (int j = 0; j < mechanics[i].getCounter(); j++) {
+				mechanicsFile << mechanics[i].getAppointment(j).hours << endl;
+				mechanicsFile << mechanics[i].getAppointment(j).mins << endl;
+			}
+		}
+		//Close the file
+		mechanicsFile.close();
+		//Delete anything taking up memory
+		delete[] customers;
+		delete[] mechanics;
 		break;
 	}
 	case 3: {
-		//open mechanics.txt
-		ifstream mechanicsFile("mechanics.txt");
-		//check if the file is open
-		if (!mechanicsFile.is_open()) {
-			cout << "Error opening the file" << endl;
+		//open customers.txt
+		ifstream customersFile;
+		customersFile.open("customers.txt");
+		//Check that the file is open
+		if (!customersFile.is_open()) {
+			cout << "Error opening file" << endl;
 			return 0;
 		}
+		//Check that the file is not empty
+		if (customersFile.peek() == ifstream::traits_type::eof()) {
+			cout << "The customers file is empty, please run the program once or manually enter some information" << endl;
+			return 0;
+		}
+		string line2;
+		while (getline(customersFile, line2)) {
+			//number of customers
+			int numCustomers = stoi(line2);
+			//create an array of customers
+			Customer* customers = new Customer[numCustomers];
+			//read the info of the customers
+			for (int i = 0; i < numCustomers; i++) {
+				//Validate each line
+				getline(customersFile, line2);
+				customers[i].setName(line2);
+				//id
+				getline(customersFile, line2);
+				customers[i].setID(stoi(line2));
+				//appointment hours
+				getline(customersFile, line2);
+				int hours = stoi(line2);
+				//appointment mins
+				getline(customersFile, line2);
+				int mins = stoi(line2);
+				//set the appointment
+				customers[i].setAppointment(hours, mins);
+				//mechanic id
+				getline(customersFile, line2);
+				customers[i].setMechanicID(stoi(line2));
+			}
+			//print the info of the customers
+			cout << "Customers: " << endl;
+			for (int i = 0; i < numCustomers; i++) {
+				customers[i].printInfo();
+				cout << endl;
+			}
+			//delete anything taking up memory
+			delete[] customers;
+		}
+		//close the file
+		customersFile.close();
+
+		//open mechanics.txt
+		ifstream mechanicsFile;
+		mechanicsFile.open("mechanics.txt");
+		//Check that the file is open
+		if (!mechanicsFile.is_open()) {
+			cout << "Error opening file" << endl;
+			return 0;
+		}
+		//Check that the file is not empty
+		if (mechanicsFile.peek() == ifstream::traits_type::eof()) {
+			cout << "The mechanics file is empty, please run the program once or manually enter some information" << endl;
+			return 0;
+		}
+		string line1;
+		while (getline(mechanicsFile, line1)) {
+			//number of mechanics
+			int numMechanics = stoi(line1);
+			//create an array of mechanics
+			Mechanic* mechanics = new Mechanic[numMechanics];
+			//read the info of the mechanics
+			for (int i = 0; i < numMechanics; i++) {
+				//name
+				getline(mechanicsFile, line1);
+				mechanics[i].setName(line1);
+				//id
+				getline(mechanicsFile, line1);
+				mechanics[i].setID(stoi(line1));
+				//age
+				getline(mechanicsFile, line1);
+				mechanics[i].setAge(stoi(line1));
+				//number of appointments
+				getline(mechanicsFile, line1);
+				int numAppointments = stoi(line1);
+				// appointments
+				for (int j = 0; j < numAppointments; j++) {
+					//hours
+					getline(mechanicsFile, line1);
+					int hours = stoi(line1);
+					//mins
+					getline(mechanicsFile, line1);
+					int mins = stoi(line1);
+					//add the appointment to the mechanic
+					mechanics[i].setAppointment({ hours, mins });
+				}
+			}
+			//print the info of the mechanics
+			cout << "Mechanics: " << endl;
+			for (int i = 0; i < numMechanics; i++) {
+				mechanics[i].printInfo();
+				cout << endl;
+			}
+			//delete anything taking up memory
+			delete[] mechanics;
+		}
+		//close the file
+		mechanicsFile.close();
+		//Check if all the mechanics dont have appointments if so then delete the files
 
 		break;
 	}
